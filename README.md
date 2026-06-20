@@ -13,6 +13,28 @@ A full-stack store rating web application built with **Express.js**, **SQLite**,
 - Dark mode, responsive design (mobile/tablet/desktop)
 - Docker support, GitHub Actions CI
 
+## Screenshots
+
+| Login Page | Admin Dashboard |
+|:---:|:---:|
+| ![Login](screenshots/login-page.png) | ![Dashboard](screenshots/admin-dashboard.png) |
+
+| Admin Users | Admin Stores |
+|:---:|:---:|
+| ![Users](screenshots/admin-users.png) | ![Stores](screenshots/admin-stores.png) |
+
+| User Stores | Signup |
+|:---:|:---:|
+| ![User Stores](screenshots/user-stores.png) | ![Signup](screenshots/signup.png) |
+
+| Mobile Login | Mobile Dashboard |
+|:---:|:---:|
+| ![Mobile Login](screenshots/mobile-login.png) | ![Mobile Dashboard](screenshots/mobile-dashboard.png) |
+
+| Dark Mode - Login | Dark Mode - Dashboard |
+|:---:|:---:|
+| ![Login Dark](screenshots/login-page-dark.png) | ![Dashboard Dark](screenshots/admin-dashboard-dark.png) |
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -42,9 +64,9 @@ The database auto-creates at `backend/data/rating_app.db` with seed data (5 stor
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@example.com | Admin@123 |
-| User | user@example.com | User@123 |
-| Owner | owner@example.com | Owner@123 |
+| Admin | admin@test.com | Admin@123 |
+| User | test@example.com | User@123 |
+| Owner | owner@test.com | Owner@123 |
 
 ## API Routes
 
