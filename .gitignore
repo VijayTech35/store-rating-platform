@@ -4,7 +4,6 @@ dist/
 .DS_Store
 Thumbs.db
 *.log
-screenshots/
 backend/data/*.db*
 backend/data/*.db-shm
 backend/data/*.db-wal

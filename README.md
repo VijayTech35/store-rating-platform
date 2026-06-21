@@ -15,29 +15,7 @@ A full-stack store rating web application built with **Express.js**, **PostgreSQ
 
 ## Screenshots
 
-| Admin Dashboard | Login Page |
-|:---:|:---:|
-| ![Dashboard](screenshots/admin-dashboard.png) | ![Login](screenshots/login-page.png) |
-
-| Admin Users | Admin Stores |
-|:---:|:---:|
-| ![Users](screenshots/admin-users.png) | ![Stores](screenshots/admin-stores.png) |
-
-| User Stores | Signup |
-|:---:|:---:|
-| ![User Stores](screenshots/user-stores.png) | ![Signup](screenshots/signup.png) |
-
-| Mobile Login | Mobile Dashboard |
-|:---:|:---:|
-| ![Mobile Login](screenshots/mobile-login.png) | ![Mobile Dashboard](screenshots/mobile-dashboard.png) |
-
-| Dark Mode - Login | Dark Mode - Dashboard |
-|:---:|:---:|
-| ![Login Dark](screenshots/login-page-dark.png) | ![Dashboard Dark](screenshots/admin-dashboard-dark.png) |
-
-| Light Mode - Dashboard |
-|:---:|
-| ![Dashboard Light](screenshots/admin-dashboard-light.png) |
+![Dashboard](screenshots/dashboard.png)
 
 ## Tech Stack
 
