@@ -5,7 +5,10 @@ const DB_NAME = process.env.DB_NAME || 'rating_app';
 
 const getPoolConfig = (dbName = DB_NAME) => {
   if (process.env.DATABASE_URL) {
-    return { connectionString: process.env.DATABASE_URL };
+    return {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    };
   }
   return {
     host: process.env.DB_HOST || 'localhost',
@@ -13,6 +16,7 @@ const getPoolConfig = (dbName = DB_NAME) => {
     database: dbName,
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   };
 };
 
