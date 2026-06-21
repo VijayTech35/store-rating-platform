@@ -55,7 +55,7 @@ function StarRating({ value, onChange }) {
             } ${star <= (hover || value) && pulse === star ? 'star-bounce' : ''}`} />
           </button>
           {hover === star && (
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-deepblue text-gray-900 dark:text-palepink text-xs px-2 py-1 rounded-md whitespace-nowrap slide-down border border-gray-200 dark:border-white/10" role="tooltip">
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 dark:bg-deepblue text-white dark:text-palepink text-xs px-2 py-1 rounded-md whitespace-nowrap slide-down border border-gray-200 dark:border-white/10" role="tooltip">
               {RATING_LABELS[star]}
             </div>
           )}
@@ -140,16 +140,16 @@ export default function UserStores() {
             <div className="tilt-card-glow" />
             <div className="flex items-start justify-between mb-3">
               <h3 className="font-semibold text-gray-900 dark:text-palepink">{store.name}</h3>
-              <div className="flex items-center gap-1 bg-deepblue px-2.5 py-1 rounded-lg" style={((parseFloat(store.avg_rating) || 0) >= 4) ? { boxShadow: '0 0 12px rgba(241,145,109,0.4)' } : ((parseFloat(store.avg_rating) || 0) >= 3) ? { boxShadow: '0 0 12px rgba(174,125,172,0.3)' } : { boxShadow: '0 0 12px rgba(65,59,97,0.4)' }}>
+              <div className="flex items-center gap-1 bg-gray-200 dark:bg-deepblue px-2.5 py-1 rounded-lg" style={((parseFloat(store.avg_rating) || 0) >= 4) ? { boxShadow: '0 0 12px rgba(241,145,109,0.4)' } : ((parseFloat(store.avg_rating) || 0) >= 3) ? { boxShadow: '0 0 12px rgba(174,125,172,0.3)' } : { boxShadow: '0 0 12px rgba(65,59,97,0.4)' }}>
                 <HiStar className="w-4 h-4 text-orange-500 dark:text-peach" />
-                <span className="text-sm font-bold text-gray-900 dark:text-palepink">{(parseFloat(store.avg_rating) || 0).toFixed(1)}</span>
+                <span className="text-sm font-bold text-gray-700 dark:text-palepink">{(parseFloat(store.avg_rating) || 0).toFixed(1)}</span>
               </div>
             </div>
             <p className="text-sm text-gray-500 dark:text-palepink/60 mb-1">{store.address}</p>
             <p className="text-sm text-gray-400 dark:text-palepink/40 mb-3">{store.email} &middot; {store.rating_count} rating(s)</p>
             {store.userRating && (
               <div className="mb-2">
-                <span className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-full bg-gradient-to-r from-lavender/20 to-peach/20 text-orange-500 dark:text-peach shadow-sm">
+                <span className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-100 to-orange-100 dark:from-lavender/20 dark:to-peach/20 text-orange-600 dark:text-peach shadow-sm">
                   Your taste: {RATING_LABELS[store.userRating]?.toLowerCase() || 'rated'}
                 </span>
               </div>
