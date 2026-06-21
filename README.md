@@ -35,6 +35,10 @@ A full-stack store rating web application built with **Express.js**, **SQLite**,
 |:---:|:---:|
 | ![Login Dark](screenshots/login-page-dark.png) | ![Dashboard Dark](screenshots/admin-dashboard-dark.png) |
 
+| Light Mode - Dashboard |
+|:---:|
+| ![Dashboard Light](screenshots/admin-dashboard-light.png) |
+
 ## Tech Stack
 
 | Layer | Technology |
