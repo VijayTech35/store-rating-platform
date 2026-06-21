@@ -1,17 +1,17 @@
 const request = require('supertest');
 const app = require('../src/app');
-const db = require('../src/config/database');
+const { pool } = require('../src/config/database');
 
-let adminToken, userToken, ownerToken;
+let adminToken, userToken, ownerToken, ownerId, storeId;
 
-beforeAll(() => {
-  db.prepare('DELETE FROM ratings').run();
-  db.prepare('DELETE FROM stores').run();
-  db.prepare('DELETE FROM users').run();
+beforeAll(async () => {
+  await pool.query('DELETE FROM ratings');
+  await pool.query('DELETE FROM stores');
+  await pool.query('DELETE FROM users');
 });
 
-afterAll(() => {
-  db.close();
+afterAll(async () => {
+  await pool.end();
 });
 
 describe('Auth', () => {
@@ -68,15 +68,24 @@ describe('Protected Routes', () => {
 });
 
 describe('Admin CRUD', () => {
-  let storeId, ownerId;
-
   test('creates admin and owner users', async () => {
-    await request(app).post('/api/auth/signup').send({ name: 'Admin User Twenty Char', email: 'admin@test.com', password: 'Adminpass1!', address: '1 Admin Lane', role: 'admin' });
-    const login = await request(app).post('/api/auth/login').send({ email: 'admin@test.com', password: 'Adminpass1!' });
+    const adminSignup = await request(app)
+      .post('/api/auth/signup')
+      .send({ name: 'Admin User Twenty Char', email: 'admin@test.com', password: 'Adminpass1!', address: '1 Admin Lane' });
+    // Admin is created via signup but its role is user. We need to promote to admin.
+    await pool.query("UPDATE users SET role = 'admin' WHERE email = 'admin@test.com'");
+    const login = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'admin@test.com', password: 'Adminpass1!' });
     adminToken = login.body.token;
 
-    await request(app).post('/api/auth/signup').send({ name: 'Store Owner Twenty Char', email: 'owner@test.com', password: 'Ownerpass1!', address: '2 Owner Lane', role: 'store_owner' });
-    const ownerLogin = await request(app).post('/api/auth/login').send({ email: 'owner@test.com', password: 'Ownerpass1!' });
+    const ownerSignup = await request(app)
+      .post('/api/auth/signup')
+      .send({ name: 'Store Owner Twenty Char', email: 'owner@test.com', password: 'Ownerpass1!', address: '2 Owner Lane' });
+    await pool.query("UPDATE users SET role = 'store_owner' WHERE email = 'owner@test.com'");
+    const ownerLogin = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'owner@test.com', password: 'Ownerpass1!' });
     ownerId = ownerLogin.body.user.id;
     ownerToken = ownerLogin.body.token;
   });
@@ -94,26 +103,37 @@ describe('Admin CRUD', () => {
   });
 
   test('POST /api/admin/stores', async () => {
-    const res = await request(app).post('/api/admin/stores').set('Authorization', `Bearer ${adminToken}`).send({ name: 'Test Store', email: 'store@test.com', address: '1 Store St', owner_id: ownerId });
+    const res = await request(app)
+      .post('/api/admin/stores')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ name: 'Test Store', email: 'store@test.com', address: '1 Store St', owner_id: ownerId });
     expect(res.status).toBe(201);
     storeId = res.body.store.id;
   });
 
   test('PUT /api/admin/stores/:id', async () => {
-    const res = await request(app).put(`/api/admin/stores/${storeId}`).set('Authorization', `Bearer ${adminToken}`).send({ name: 'Updated Store' });
+    const res = await request(app)
+      .put(`/api/admin/stores/${storeId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ name: 'Updated Store' });
     expect(res.status).toBe(200);
     expect(res.body.store.name).toBe('Updated Store');
   });
 
   test('DELETE /api/admin/stores/:id', async () => {
-    const res = await request(app).delete(`/api/admin/stores/${storeId}`).set('Authorization', `Bearer ${adminToken}`);
+    const res = await request(app)
+      .delete(`/api/admin/stores/${storeId}`)
+      .set('Authorization', `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
   });
 });
 
 describe('Profile', () => {
   test('PUT /api/auth/profile', async () => {
-    const res = await request(app).put('/api/auth/profile').set('Authorization', `Bearer ${userToken}`).send({ name: 'Updated Name Twenty Char' });
+    const res = await request(app)
+      .put('/api/auth/profile')
+      .set('Authorization', `Bearer ${userToken}`)
+      .send({ name: 'Updated Name Twenty Char' });
     expect(res.status).toBe(200);
     expect(res.body.user.name).toBe('Updated Name Twenty Char');
   });

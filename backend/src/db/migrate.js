@@ -1,3 +1,13 @@
-console.log('SQLite database initializes automatically on first use.');
-console.log('Run `npm start` or `npm run dev` to start the server.');
-console.log('The database file will be created at backend/data/rating_app.db');
+const { initSchema } = require('../config/database');
+
+console.log('Initializing PostgreSQL schema...');
+initSchema()
+  .then(() => {
+    console.log('Schema initialized successfully.');
+    console.log('Database: rating_app');
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error('Schema initialization failed:', err.message);
+    process.exit(1);
+  });

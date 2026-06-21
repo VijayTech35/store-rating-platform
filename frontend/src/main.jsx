@@ -17,9 +17,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <App />
           <Toaster position="top-right" toastOptions={{
             duration: 3000,
-            style: { borderRadius: '12px', background: '#1f2937', color: '#f3f4f6', fontSize: '14px', padding: '12px 16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' },
-            success: { iconTheme: { primary: '#10b981', secondary: '#fff' } },
-            error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+            style: { borderRadius: '12px', background: '#1f2937', color: '#f3f4f6', fontSize: '14px', padding: '12px 16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', borderLeft: '3px solid' },
+            success: { iconTheme: { primary: '#10b981', secondary: '#fff' }, style: { borderLeftColor: '#10b981' } },
+            error: { iconTheme: { primary: '#ef4444', secondary: '#fff' }, style: { borderLeftColor: '#ef4444' } },
+            custom: { style: { borderImage: 'linear-gradient(to bottom, #8b5cf6, #c026d3) 1', borderLeft: '3px solid' } },
           }} />
         </AuthProvider>
       </ThemeProvider>

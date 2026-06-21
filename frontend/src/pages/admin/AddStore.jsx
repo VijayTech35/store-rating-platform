@@ -41,46 +41,46 @@ export default function AdminAddStore() {
   return (
     <div className="max-w-2xl mx-auto fade-in">
       <Breadcrumb items={[{ to: '/admin', label: 'Dashboard' }, { to: '/admin/stores', label: 'Stores' }, { label: 'Add Store' }]} />
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Add New Store</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-palepink mb-6">Add New Store</h1>
       <div className="glass-card-gradient rounded-2xl p-6 sm:p-8">
         <form onSubmit={handleSubmit} noValidate className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="addstore-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Store Name</label>
+              <label htmlFor="addstore-name" className="block text-sm font-medium text-violet-700 dark:text-lavender mb-1.5">Store Name</label>
               <div className="relative">
-                <HiOfficeBuilding className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
-                <input id="addstore-name" type="text" value={form.name} onChange={update('name')} className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:text-gray-100 ${errors.name ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'}`} placeholder="Store name" required aria-invalid={!!errors.name} />
+                <HiOfficeBuilding className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-mutedpurple" aria-hidden="true" />
+                <input id="addstore-name" type="text" value={form.name} onChange={update('name')} className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-lavender/40 outline-none bg-white dark:bg-deepblue/50 text-gray-900 dark:text-palepink placeholder-gray-400 dark:placeholder-palepink/30 ${errors.name ? 'border-red-500/50 bg-red-900/20' : 'border-gray-200 dark:border-white/10'}`} placeholder="Store name" required aria-invalid={!!errors.name} />
               </div>
-              {errors.name && <p className="text-red-500 dark:text-red-400 text-xs mt-1" role="alert">{errors.name}</p>}
+              {errors.name && <p className="text-red-400 text-xs mt-1" role="alert">{errors.name}</p>}
             </div>
             <div>
-              <label htmlFor="addstore-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
+              <label htmlFor="addstore-email" className="block text-sm font-medium text-violet-700 dark:text-lavender mb-1.5">Email</label>
               <div className="relative">
-                <HiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
-                <input id="addstore-email" type="email" value={form.email} onChange={update('email')} className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:text-gray-100 ${errors.email ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'}`} placeholder="store@example.com" required aria-invalid={!!errors.email} />
+                <HiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-mutedpurple" aria-hidden="true" />
+                <input id="addstore-email" type="email" value={form.email} onChange={update('email')} className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-lavender/40 outline-none bg-white dark:bg-deepblue/50 text-gray-900 dark:text-palepink placeholder-gray-400 dark:placeholder-palepink/30 ${errors.email ? 'border-red-500/50 bg-red-900/20' : 'border-gray-200 dark:border-white/10'}`} placeholder="store@example.com" required aria-invalid={!!errors.email} />
               </div>
-              {errors.email && <p className="text-red-500 dark:text-red-400 text-xs mt-1" role="alert">{errors.email}</p>}
+              {errors.email && <p className="text-red-400 text-xs mt-1" role="alert">{errors.email}</p>}
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="addstore-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Address</label>
+              <label htmlFor="addstore-address" className="block text-sm font-medium text-violet-700 dark:text-lavender mb-1.5">Address</label>
               <div className="relative">
-                <HiLocationMarker className="absolute left-3 top-3 w-5 h-5 text-gray-400" aria-hidden="true" />
-                <textarea id="addstore-address" value={form.address} onChange={update('address')} rows={2} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none dark:bg-gray-700 dark:text-gray-100" placeholder="Store address" required />
+                <HiLocationMarker className="absolute left-3 top-3 w-5 h-5 text-gray-400 dark:text-mutedpurple" aria-hidden="true" />
+                <textarea id="addstore-address" value={form.address} onChange={update('address')} rows={2} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:ring-2 focus:ring-lavender/40 outline-none resize-none bg-white dark:bg-deepblue/50 text-gray-900 dark:text-palepink placeholder-gray-400 dark:placeholder-palepink/30" placeholder="Store address" required />
               </div>
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="addstore-owner" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Store Owner</label>
+              <label htmlFor="addstore-owner" className="block text-sm font-medium text-violet-700 dark:text-lavender mb-1.5">Store Owner</label>
               <div className="relative">
-                <HiUser className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
-                <select id="addstore-owner" value={form.owner_id} onChange={update('owner_id')} className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-gray-700 dark:text-gray-100 ${errors.owner_id ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'}`} aria-label="Select store owner">
-                  <option value="">Select a store owner...</option>
-                  {owners.map((o) => <option key={o.id} value={o.id}>{o.name} ({o.email})</option>)}
+                <HiUser className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-mutedpurple" aria-hidden="true" />
+                <select id="addstore-owner" value={form.owner_id} onChange={update('owner_id')} className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-lavender/40 outline-none bg-white dark:bg-deepblue/50 text-gray-900 dark:text-palepink ${errors.owner_id ? 'border-red-500/50 bg-red-900/20' : 'border-gray-200 dark:border-white/10'}`} aria-label="Select store owner">
+                  <option value="" className="bg-navy text-gray-400 dark:text-palepink/50">Select a store owner...</option>
+                  {owners.map((o) => <option key={o.id} value={o.id} className="bg-navy text-gray-900 dark:text-palepink">{o.name} ({o.email})</option>)}
                 </select>
               </div>
-              {errors.owner_id && <p className="text-red-500 dark:text-red-400 text-xs mt-1" role="alert">{errors.owner_id}</p>}
+              {errors.owner_id && <p className="text-red-400 text-xs mt-1" role="alert">{errors.owner_id}</p>}
             </div>
           </div>
-          <button type="submit" className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl text-sm hover:from-blue-700 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all shadow-md shadow-blue-200 dark:shadow-blue-900 btn-click btn-premium">
+          <button type="submit" className="bg-gradient-to-r from-lavender to-peach text-navy w-full sm:w-auto px-6 py-2.5 font-semibold rounded-xl text-sm shadow-md btn-click btn-premium">
             Create Store
           </button>
         </form>

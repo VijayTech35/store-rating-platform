@@ -1,8 +1,5 @@
 node_modules/
 dist/
 .env
-*.db
-*.sqlite
-backend/data/
 .DS_Store
 Thumbs.db

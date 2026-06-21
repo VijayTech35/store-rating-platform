@@ -6,7 +6,7 @@ export default function Highlight({ text, query, className = '' }) {
     <span className={className}>
       {parts.map((part, i) =>
         part.toLowerCase() === query.toLowerCase()
-          ? <mark key={i} className="bg-amber-200 dark:bg-amber-800/60 text-inherit rounded-sm px-0.5">{part}</mark>
+          ? <mark key={i} className="bg-peach/30 text-orange-500 dark:text-peach rounded-sm px-0.5">{part}</mark>
           : part
       )}
     </span>

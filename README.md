@@ -15,9 +15,9 @@ A full-stack store rating web application built with **Express.js**, **SQLite**,
 
 ## Screenshots
 
-| Login Page | Admin Dashboard |
+| Admin Dashboard | Login Page |
 |:---:|:---:|
-| ![Login](screenshots/login-page.png) | ![Dashboard](screenshots/admin-dashboard.png) |
+| ![Dashboard](screenshots/admin-dashboard.png) | ![Login](screenshots/login-page.png) |
 
 | Admin Users | Admin Stores |
 |:---:|:---:|

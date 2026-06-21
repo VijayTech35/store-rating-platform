@@ -1,8 +1,10 @@
 require('dotenv').config();
+require('express-async-errors');
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const errorHandler = require('./middleware/errorHandler');
+const { initSchema } = require('./config/database');
 
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
@@ -10,6 +12,8 @@ const storeRoutes = require('./routes/stores');
 const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
+
+initSchema().catch(err => { console.error('Failed to init schema:', err); process.exit(1); });
 
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200, standardHeaders: true, legacyHeaders: false, message: { message: 'Too many requests, please try again later.' } });
 app.use(limiter);

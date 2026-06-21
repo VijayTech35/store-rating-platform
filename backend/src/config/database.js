@@ -1,58 +1,75 @@
-const Database = require('better-sqlite3');
-const path = require('path');
+require('dotenv').config();
+const { Pool } = require('pg');
 
-const dbPath = path.join(__dirname, '../../data/rating_app.db');
-const fs = require('fs');
-const dir = path.dirname(dbPath);
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
+const DB_NAME = process.env.DB_NAME || 'rating_app';
 
-const db = new Database(dbPath);
+const adminPool = new Pool({
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  database: 'postgres',
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+});
 
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
-
-const initSchema = () => {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL CHECK(length(name) >= 20),
-      email TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
-      address TEXT NOT NULL,
-      role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('admin', 'user', 'store_owner')),
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now'))
-    );
-
-    CREATE TABLE IF NOT EXISTS stores (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL,
-      address TEXT NOT NULL,
-      owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now'))
-    );
-
-    CREATE TABLE IF NOT EXISTS ratings (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-      store_id INTEGER REFERENCES stores(id) ON DELETE CASCADE,
-      rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now')),
-      UNIQUE(user_id, store_id)
-    );
-
-    CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
-    CREATE INDEX IF NOT EXISTS idx_stores_owner ON stores(owner_id);
-    CREATE INDEX IF NOT EXISTS idx_ratings_store ON ratings(store_id);
-    CREATE INDEX IF NOT EXISTS idx_ratings_user ON ratings(user_id);
-  `);
+const ensureDb = async () => {
+  const { rows } = await adminPool.query(
+    `SELECT 1 FROM pg_database WHERE datname = $1`, [DB_NAME]
+  );
+  if (rows.length === 0) {
+    await adminPool.query(`CREATE DATABASE "${DB_NAME}"`);
+    console.log(`Database "${DB_NAME}" created.`);
+  }
+  await adminPool.end();
 };
 
-initSchema();
+const pool = new Pool({
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  database: DB_NAME,
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+});
 
-module.exports = db;
+const initSchema = async () => {
+  await ensureDb();
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(60) NOT NULL CHECK (char_length(name) >= 20),
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      address VARCHAR(400) NOT NULL,
+      role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user', 'store_owner')),
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS stores (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(60) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      address VARCHAR(400) NOT NULL,
+      owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS ratings (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      store_id INTEGER REFERENCES stores(id) ON DELETE CASCADE,
+      rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW(),
+      UNIQUE(user_id, store_id)
+    );
+  `);
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)');
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_stores_owner ON stores(owner_id)');
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_ratings_store ON ratings(store_id)');
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_ratings_user ON ratings(user_id)');
+};
+
+module.exports = { pool, initSchema };

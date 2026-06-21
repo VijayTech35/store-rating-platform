@@ -17,28 +17,28 @@ export default function Pagination({ page, totalPages, total, onPageChange, page
   return (
     <div className="flex items-center justify-between pt-4 gap-2">
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-400 dark:text-gray-500">{total} total</span>
+        <span className="text-xs font-medium text-gray-400 dark:text-palepink/50 bg-white dark:bg-deepblue/50 px-2.5 py-1 rounded-lg">{total} total</span>
         {onPageSizeChange && (
-          <select value={pageSize} onChange={(e) => onPageSizeChange(Number(e.target.value))} className="text-xs px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 outline-none" aria-label="Page size">
-            {PAGE_SIZES.map((s) => <option key={s} value={s}>{s} / page</option>)}
+          <select value={pageSize} onChange={(e) => onPageSizeChange(Number(e.target.value))} className="text-xs px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-deepblue/50 text-gray-600 dark:text-palepink/70 outline-none transition-shadow hover:border-lavender/30 focus:ring-2 focus:ring-lavender/20" aria-label="Page size">
+            {PAGE_SIZES.map((s) => <option key={s} value={s} className="bg-navy text-gray-900 dark:text-palepink">{s} / page</option>)}
           </select>
         )}
       </div>
       {totalPages > 1 && (
         <div className="flex items-center gap-1">
-          <button onClick={() => onPageChange(page - 1)} disabled={page <= 1} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-30 disabled:cursor-default transition-all" aria-label="Previous page">
+          <button onClick={() => onPageChange(page - 1)} disabled={page <= 1} className="p-1.5 rounded-xl text-gray-400 dark:text-palepink/50 hover:text-violet-700 dark:text-lavender hover:bg-violet-50 dark:bg-lavender/10 disabled:opacity-30 disabled:cursor-default transition-all" aria-label="Previous page">
             <HiChevronLeft className="w-4 h-4" />
           </button>
           {pages.map((p, i) =>
             p === '...' ? (
-              <span key={`ellipsis-${i}`} className="px-2 text-xs text-gray-400">...</span>
+              <span key={`ellipsis-${i}`} className="px-2 text-xs text-gray-400 dark:text-palepink/40">...</span>
             ) : (
-              <button key={p} onClick={() => onPageChange(p)} className={`min-w-[28px] h-7 text-xs font-medium rounded-lg transition-all ${p === page ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+              <button key={p} onClick={() => onPageChange(p)} className={`min-w-[32px] h-8 text-xs font-medium rounded-xl transition-all duration-200 ${p === page ? 'bg-gradient-to-r from-lavender to-peach text-navy text-navy shadow-md scale-105' : 'text-gray-400 dark:text-palepink/50 hover:bg-gray-100 dark:hover:bg-white/5 hover:scale-105'}`}>
                 {p}
               </button>
             )
           )}
-          <button onClick={() => onPageChange(page + 1)} disabled={page >= totalPages} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-30 disabled:cursor-default transition-all" aria-label="Next page">
+          <button onClick={() => onPageChange(page + 1)} disabled={page >= totalPages} className="p-1.5 rounded-xl text-gray-400 dark:text-palepink/50 hover:text-violet-700 dark:text-lavender hover:bg-violet-50 dark:bg-lavender/10 disabled:opacity-30 disabled:cursor-default transition-all" aria-label="Next page">
             <HiChevronRight className="w-4 h-4" />
           </button>
         </div>

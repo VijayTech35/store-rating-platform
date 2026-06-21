@@ -9,6 +9,20 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: rating_app
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     defaults:
       run:
         working-directory: backend
@@ -21,9 +35,13 @@ jobs:
           cache-dependency-path: backend/package-lock.json
       - run: npm ci
       - run: npm test
-      - run: npm run build 2>/dev/null || true
         env:
           JWT_SECRET: test-secret
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: rating_app
+          DB_USER: postgres
+          DB_PASSWORD: postgres
 
   frontend:
     runs-on: ubuntu-latest

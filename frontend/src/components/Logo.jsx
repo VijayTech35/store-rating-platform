@@ -7,66 +7,63 @@ const LogoSvg = ({ size = 'default' }) => {
   return (
     <svg width={d} height={d} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="logo-svg">
       <defs>
-        <linearGradient id="lg-base" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#2563EB" />
-          <stop offset="50%" stopColor="#5B21B6" />
-          <stop offset="100%" stopColor="#6D28D9" />
+        <radialGradient id="lg-bg" cx="35%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#AE7DAC" />
+          <stop offset="60%" stopColor="#413B61" />
+          <stop offset="100%" stopColor="#19305C" />
+        </radialGradient>
+        <linearGradient id="lg-ring" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#F3DADF" stopOpacity="0.3" />
+          <stop offset="50%" stopColor="#AE7DAC" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#F1916D" stopOpacity="0.1" />
         </linearGradient>
-        <linearGradient id="lg-shine" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="white" stopOpacity="0.1" />
-          <stop offset="100%" stopColor="white" stopOpacity="0" />
+        <linearGradient id="lg-v-left" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#F3DADF" stopOpacity="0.8" />
         </linearGradient>
-        <linearGradient id="lg-ribbon-l" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="white" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#E0E7FF" stopOpacity="0.85" />
-        </linearGradient>
-        <linearGradient id="lg-ribbon-r" x1="1" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="white" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#EDE9FE" stopOpacity="0.85" />
+        <linearGradient id="lg-v-right" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#AE7DAC" stopOpacity="0.8" />
         </linearGradient>
         <linearGradient id="lg-star" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#FEF08A" />
-          <stop offset="40%" stopColor="#FDE047" />
-          <stop offset="100%" stopColor="#D97706" />
+          <stop offset="0%" stopColor="#F3DADF" />
+          <stop offset="50%" stopColor="#F1916D" />
+          <stop offset="100%" stopColor="#AE7DAC" />
+        </linearGradient>
+        <linearGradient id="lg-wave" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.05" />
         </linearGradient>
         <filter id="lg-shadow">
-          <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#1E3A5F" floodOpacity="0.35" />
+          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#03122F" floodOpacity="0.5" />
         </filter>
         <filter id="lg-star-glow">
-          <feGaussianBlur stdDeviation="1.2" result="blur" />
+          <feGaussianBlur stdDeviation="0.8" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
-        <filter id="lg-inner-light">
-          <feComponentTransfer in="SourceAlpha"><feFuncA type="table" tableValues="1 0" /></feComponentTransfer>
-          <feGaussianBlur stdDeviation="1.5" />
-          <feOffset dx="-1" dy="-1" result="offsetblur" />
-          <feFlood floodColor="white" floodOpacity="0.15" />
-          <feComposite in2="offsetblur" operator="in" />
-          <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
       </defs>
-      <rect x="2" y="2" width="52" height="52" rx="13" fill="url(#lg-base)" />
-      <rect x="2" y="2" width="52" height="52" rx="13" fill="url(#lg-shine)" />
-      <rect x="2" y="2" width="52" height="52" rx="13" stroke="#A78BFA" strokeOpacity="0.3" strokeWidth="0.5" fill="none" />
-      <rect x="3" y="3" width="50" height="50" rx="12" stroke="white" strokeOpacity="0.08" strokeWidth="0.5" fill="none" />
-      <path d="M 3 3 Q 28 10 53 3" stroke="white" strokeWidth="0.5" strokeOpacity="0.08" fill="none" />
+      <circle cx="28" cy="28" r="27" fill="url(#lg-bg)" />
+      <circle cx="28" cy="28" r="26" stroke="url(#lg-ring)" strokeWidth="1.5" fill="none" />
+      <circle cx="28" cy="28" r="23" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" fill="none" />
+      <path d="M 8 10 Q 28 3 48 10" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8" fill="none" />
       <g filter="url(#lg-shadow)">
-        <path d="M 12 18 C 8 30, 20 37, 27 38.5" stroke="url(#lg-ribbon-l)" strokeWidth="7" strokeLinecap="round" fill="none" />
-        <path d="M 44 18 C 48 30, 36 37, 29 38.5" stroke="url(#lg-ribbon-r)" strokeWidth="7" strokeLinecap="round" fill="none" />
+        <path d="M 16 20 C 16 20, 19 32, 27 38" stroke="url(#lg-v-left)" strokeWidth="7" strokeLinecap="round" fill="none" />
+        <path d="M 40 20 C 40 20, 37 32, 29 38" stroke="url(#lg-v-right)" strokeWidth="7" strokeLinecap="round" fill="none" />
       </g>
-      <g filter="url(#lg-inner-light)">
-        <path d="M 12 18 C 8 30, 20 37, 27 38.5" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.35" />
-        <path d="M 44 18 C 48 30, 36 37, 29 38.5" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.35" />
-      </g>
-      <circle cx="28" cy="38" r="3" fill="white" fillOpacity="0.15" />
+      <path d="M 16 20 C 16 20, 19 32, 27 38" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <path d="M 40 20 C 40 20, 37 32, 29 38" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <path d="M 18.5 18.5 Q 20 17 21.5 18.5" stroke="url(#lg-wave)" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M 16 16 Q 18.5 14 21 16" stroke="url(#lg-wave)" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M 13.5 13.5 Q 17 11 20.5 13.5" stroke="url(#lg-wave)" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <circle cx="23" cy="41" r="3" fill="rgba(255,255,255,0.08)" />
       <g filter="url(#lg-star-glow)" className="logo-star">
         <polygon
-          points="28,32 29.18,35.14 32.5,35.38 29.9,37.56 30.7,40.82 28,38.86 25.3,40.82 26.1,37.56 23.5,35.38 26.82,35.14"
+          points="28,40.5 28.7,42.4 30.7,42.4 29,43.5 29.7,45.4 28,44.3 26.3,45.4 27,43.5 25.3,42.4 27.3,42.4"
           fill="url(#lg-star)"
         />
       </g>
-      <circle cx="12" cy="13" r="1.2" fill="white" fillOpacity="0.12" />
-      <circle cx="44" cy="13" r="1.2" fill="white" fillOpacity="0.12" />
+      <circle cx="11" cy="15" r="1.2" fill="white" fillOpacity="0.15" />
+      <circle cx="45" cy="15" r="1.2" fill="white" fillOpacity="0.15" />
     </svg>
   );
 };
@@ -83,7 +80,7 @@ export default function Logo({ linkTo = '/', size = 'default', showText = true }
     <div className={`flex items-center gap-2.5 logo-wrapper ${size === 'large' ? 'logo-wrapper-large' : ''}`}>
       <LogoSvg size={size} />
       {showText && (
-        <span className={`${s.text} font-extrabold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent tracking-tight`}>
+        <span className={`${s.text} font-extrabold bg-gradient-to-r from-lavender via-peach to-palepink bg-clip-text text-transparent tracking-tight`}>
           VibeRate
         </span>
       )}

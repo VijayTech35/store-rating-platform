@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config/auth');
-const db = require('../config/database');
+const { pool } = require('../config/database');
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -11,11 +11,11 @@ const authenticate = (req, res, next) => {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, jwtSecret);
-    const user = db.prepare('SELECT id, name, email, address, role FROM users WHERE id = ?').get(decoded.id);
-    if (!user) {
+    const { rows } = await pool.query('SELECT id, name, email, address, role FROM users WHERE id = $1', [decoded.id]);
+    if (!rows[0]) {
       return res.status(401).json({ message: 'Invalid token. User not found.' });
     }
-    req.user = user;
+    req.user = rows[0];
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid or expired token.' });

@@ -1,54 +1,53 @@
-const db = require('../config/database');
+const { pool } = require('../config/database');
 
 const Rating = {
-  upsert({ user_id, store_id, rating }) {
-    const existing = db.prepare(
-      'SELECT id FROM ratings WHERE user_id = ? AND store_id = ?'
-    ).get(user_id, store_id);
-
-    if (existing) {
-      db.prepare(
-        'UPDATE ratings SET rating = ?, updated_at = datetime(\'now\') WHERE user_id = ? AND store_id = ?'
-      ).run(rating, user_id, store_id);
-    } else {
-      db.prepare(
-        'INSERT INTO ratings (user_id, store_id, rating) VALUES (?, ?, ?)'
-      ).run(user_id, store_id, rating);
-    }
-
+  async upsert({ user_id, store_id, rating }) {
+    await pool.query(
+      `INSERT INTO ratings (user_id, store_id, rating)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, store_id)
+       DO UPDATE SET rating = $3, updated_at = NOW()`,
+      [user_id, store_id, rating]
+    );
     return this.findByUserAndStore(user_id, store_id);
   },
 
-  findByUserAndStore(user_id, store_id) {
-    return db.prepare(
-      'SELECT * FROM ratings WHERE user_id = ? AND store_id = ?'
-    ).get(user_id, store_id);
+  async findByUserAndStore(user_id, store_id) {
+    const { rows } = await pool.query(
+      'SELECT * FROM ratings WHERE user_id = $1 AND store_id = $2',
+      [user_id, store_id]
+    );
+    return rows[0] || null;
   },
 
-  findByStore(store_id) {
-    return db.prepare(
+  async findByStore(store_id) {
+    const { rows } = await pool.query(
       `SELECT r.id, r.rating, r.created_at, r.updated_at,
               u.id as user_id, u.name as user_name, u.email as user_email
        FROM ratings r
        JOIN users u ON u.id = r.user_id
-       WHERE r.store_id = ?
-       ORDER BY r.created_at DESC`
-    ).all(store_id);
+       WHERE r.store_id = $1
+       ORDER BY r.created_at DESC`,
+      [store_id]
+    );
+    return rows;
   },
 
-  getAverageRating(store_id) {
-    const row = db.prepare(
-      'SELECT ROUND(AVG(rating), 2) as avg FROM ratings WHERE store_id = ?'
-    ).get(store_id);
-    return row.avg || 0;
+  async getAverageRating(store_id) {
+    const { rows } = await pool.query(
+      'SELECT ROUND(AVG(rating)::numeric, 2)::float as avg FROM ratings WHERE store_id = $1',
+      [store_id]
+    );
+    return rows[0]?.avg || 0;
   },
 
-  getCount() {
-    return db.prepare('SELECT COUNT(*) as count FROM ratings').get().count;
+  async getCount() {
+    const { rows } = await pool.query('SELECT COUNT(*)::int as count FROM ratings');
+    return rows[0].count;
   },
 
-  delete(id) {
-    db.prepare('DELETE FROM ratings WHERE id = ?').run(id);
+  async delete(id) {
+    await pool.query('DELETE FROM ratings WHERE id = $1', [id]);
   },
 };
 

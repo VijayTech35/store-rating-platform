@@ -1,106 +1,124 @@
-const db = require('../config/database');
+const { pool } = require('../config/database');
 const bcrypt = require('bcryptjs');
 
 const User = {
-  create({ name, email, password, address, role = 'user' }) {
+  async create({ name, email, password, address, role = 'user' }) {
     const password_hash = bcrypt.hashSync(password, 10);
-    const stmt = db.prepare(
+    const { rows } = await pool.query(
       `INSERT INTO users (name, email, password_hash, address, role)
-       VALUES (?, ?, ?, ?, ?)`
+       VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, address, role, created_at`,
+      [name, email, password_hash, address, role]
     );
-    const info = stmt.run(name, email, password_hash, address, role);
-    return this.findById(info.lastInsertRowid);
+    return rows[0];
   },
 
-  findByEmail(email) {
-    return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+  async findByEmail(email) {
+    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    return rows[0] || null;
   },
 
-  findById(id) {
-    return db.prepare(
-      'SELECT id, name, email, address, role, created_at FROM users WHERE id = ?'
-    ).get(id);
+  async findById(id) {
+    const { rows } = await pool.query(
+      'SELECT id, name, email, address, role, created_at FROM users WHERE id = $1',
+      [id]
+    );
+    return rows[0] || null;
   },
 
-  findAll({ search, role, sortBy = 'name', sortOrder = 'ASC', limit = 100, offset = 0 } = {}) {
+  async findAll({ search, role, excludeRole, sortBy = 'name', sortOrder = 'ASC', limit = 100, offset = 0 } = {}) {
     const allowedSortColumns = ['name', 'email', 'address', 'role', 'created_at'];
     const column = allowedSortColumns.includes(sortBy) ? sortBy : 'name';
     const order = sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-
-    const conditions = [];
     const params = [];
+    const clauses = [];
 
     if (role) {
-      conditions.push('role = ?');
-      params.push(role);
+      const roles = Array.isArray(role) ? role : [role];
+      clauses.push(`role = ANY($${params.length + 1}::text[])`);
+      params.push(roles);
+    }
+    if (excludeRole) {
+      const exRoles = Array.isArray(excludeRole) ? excludeRole : [excludeRole];
+      clauses.push(`role != ALL($${params.length + 1}::text[])`);
+      params.push(exRoles);
     }
     if (search) {
-      conditions.push('(name LIKE ? OR email LIKE ? OR address LIKE ?)');
+      clauses.push(`(name ILIKE $${params.length + 1} OR email ILIKE $${params.length + 2} OR address ILIKE $${params.length + 3})`);
       params.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
-    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : '';
 
-    const countRow = db.prepare(`SELECT COUNT(*) as count FROM users ${whereClause}`).get(...params);
-    const total = countRow.count;
+    const countResult = await pool.query(`SELECT COUNT(*)::int as count FROM users ${whereClause}`, params);
+    const total = countResult.rows[0].count;
 
-    const users = db.prepare(
+    const { rows: users } = await pool.query(
       `SELECT id, name, email, address, role, created_at
        FROM users ${whereClause}
        ORDER BY ${column} ${order}
-       LIMIT ? OFFSET ?`
-    ).all(...params, limit, offset);
+       LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+      [...params, limit, offset]
+    );
 
     return { users, total };
   },
 
-  updatePassword(id, newPassword) {
+  async updatePassword(id, newPassword) {
     const password_hash = bcrypt.hashSync(newPassword, 10);
-    db.prepare('UPDATE users SET password_hash = ?, updated_at = datetime(\'now\') WHERE id = ?').run(password_hash, id);
+    await pool.query(
+      'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
+      [password_hash, id]
+    );
   },
 
-  update(id, fields) {
+  async update(id, fields) {
     const setClauses = [];
     const params = [];
+    let idx = 1;
 
     if (fields.name) {
-      setClauses.push('name = ?');
+      setClauses.push(`name = $${idx++}`);
       params.push(fields.name);
     }
     if (fields.email) {
-      setClauses.push('email = ?');
+      setClauses.push(`email = $${idx++}`);
       params.push(fields.email);
     }
     if (fields.address) {
-      setClauses.push('address = ?');
+      setClauses.push(`address = $${idx++}`);
       params.push(fields.address);
     }
     if (fields.role) {
-      setClauses.push('role = ?');
+      setClauses.push(`role = $${idx++}`);
       params.push(fields.role);
     }
 
     if (setClauses.length === 0) return null;
 
-    setClauses.push('updated_at = datetime(\'now\')');
+    setClauses.push(`updated_at = NOW()`);
     params.push(id);
 
-    db.prepare(`UPDATE users SET ${setClauses.join(', ')} WHERE id = ?`).run(...params);
+    await pool.query(
+      `UPDATE users SET ${setClauses.join(', ')} WHERE id = $${idx}`,
+      params
+    );
     return this.findById(id);
   },
 
-  getCount() {
-    return db.prepare('SELECT COUNT(*) as count FROM users').get().count;
+  async getCount() {
+    const { rows } = await pool.query('SELECT COUNT(*)::int as count FROM users');
+    return rows[0].count;
   },
 
-  getCountByRole(role) {
-    return db.prepare('SELECT COUNT(*) as count FROM users WHERE role = ?').get(role).count;
+  async getCountByRole(role) {
+    const { rows } = await pool.query('SELECT COUNT(*)::int as count FROM users WHERE role = $1', [role]);
+    return rows[0].count;
   },
 
-  delete(id) {
-    db.prepare('DELETE FROM ratings WHERE user_id = ?').run(id);
-    db.prepare('UPDATE stores SET owner_id = NULL WHERE owner_id = ?').run(id);
-    db.prepare('DELETE FROM users WHERE id = ?').run(id);
+  async delete(id) {
+    await pool.query('DELETE FROM ratings WHERE user_id = $1', [id]);
+    await pool.query('UPDATE stores SET owner_id = NULL WHERE owner_id = $1', [id]);
+    await pool.query('DELETE FROM users WHERE id = $1', [id]);
   },
 };
 
