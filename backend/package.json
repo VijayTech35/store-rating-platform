@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "build": "cd ../frontend && npm install && npm run build",
+    "build": "cd ../frontend && npm install --include=dev && npm run build",
     "db:init": "node src/db/migrate.js",
     "db:seed": "node src/db/seed.js",
     "test": "jest --forceExit --detectOpenHandles",
