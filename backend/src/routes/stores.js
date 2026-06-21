@@ -28,13 +28,19 @@ router.get('/:id', authenticate, async (req, res) => {
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(404).json({ message: 'Store not found.' });
 
+  const ratings = await Rating.findByStore(req.params.id);
+
   let userRating = null;
+  let userRatingId = null;
   if (req.user.role === 'user') {
     const rating = await Rating.findByUserAndStore(req.user.id, store.id);
-    userRating = rating ? rating.rating : null;
+    if (rating) {
+      userRating = rating.rating;
+      userRatingId = rating.id;
+    }
   }
 
-  res.json({ store: { ...store, userRating } });
+  res.json({ store: { ...store, userRating, userRatingId }, ratings });
 });
 
 router.post('/:id/rate', authenticate, submitRatingValidation, async (req, res) => {
@@ -57,6 +63,18 @@ router.post('/:id/rate', authenticate, submitRatingValidation, async (req, res) 
   });
 
   res.json({ rating });
+});
+
+router.delete('/:id/rate', authenticate, async (req, res) => {
+  if (req.user.role !== 'user') {
+    return res.status(403).json({ message: 'Only normal users can delete ratings.' });
+  }
+
+  const rating = await Rating.findByUserAndStore(req.user.id, req.params.id);
+  if (!rating) return res.status(404).json({ message: 'Rating not found.' });
+
+  await Rating.delete(rating.id);
+  res.json({ message: 'Rating deleted.' });
 });
 
 module.exports = router;

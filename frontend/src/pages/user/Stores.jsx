@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../api/axios';
 import { HiSearch, HiStar, HiOfficeBuilding } from 'react-icons/hi';
 import toast from 'react-hot-toast';
@@ -147,7 +148,7 @@ export default function UserStores() {
             <div className="glass-card rounded-2xl p-5 tilt-card-inner relative overflow-hidden">
             <div className="tilt-card-glow" />
             <div className="flex items-start justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 dark:text-palepink">{store.name}</h3>
+              <Link to={`/stores/${store.id}`} className="font-semibold text-gray-900 dark:text-palepink hover:text-orange-500 dark:text-peach transition-colors">{store.name}</Link>
               <div className="flex items-center gap-1 bg-gray-200 dark:bg-deepblue px-2.5 py-1 rounded-lg" style={((parseFloat(store.avg_rating) || 0) >= 4) ? { boxShadow: '0 0 12px rgba(241,145,109,0.4)' } : ((parseFloat(store.avg_rating) || 0) >= 3) ? { boxShadow: '0 0 12px rgba(174,125,172,0.3)' } : { boxShadow: '0 0 12px rgba(65,59,97,0.4)' }}>
                 <HiStar className="w-4 h-4 text-orange-500 dark:text-peach" />
                 <span className="text-sm font-bold text-gray-700 dark:text-palepink">{(parseFloat(store.avg_rating) || 0).toFixed(1)}</span>

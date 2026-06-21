@@ -21,6 +21,7 @@ const UserChangePassword = lazy(() => import('./pages/user/ChangePassword'));
 const UserProfile = lazy(() => import('./pages/user/Profile'));
 const OwnerDashboard = lazy(() => import('./pages/owner/Dashboard'));
 const OwnerChangePassword = lazy(() => import('./pages/owner/ChangePassword'));
+const UserStoreDetail = lazy(() => import('./pages/user/StoreDetail'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function LazyLoad({ children }) {
@@ -51,6 +52,7 @@ function PageContent() {
         <Route path="/user" element={<PrivateRoute roles={['user']}><LazyLoad><UserStores /></LazyLoad></PrivateRoute>} />
         <Route path="/user/profile" element={<PrivateRoute roles={['user']}><LazyLoad><UserProfile /></LazyLoad></PrivateRoute>} />
         <Route path="/user/change-password" element={<PrivateRoute roles={['user']}><LazyLoad><UserChangePassword /></LazyLoad></PrivateRoute>} />
+        <Route path="/stores/:id" element={<PrivateRoute roles={['user']}><LazyLoad><UserStoreDetail /></LazyLoad></PrivateRoute>} />
         <Route path="/owner" element={<PrivateRoute roles={['store_owner']}><LazyLoad><OwnerDashboard /></LazyLoad></PrivateRoute>} />
         <Route path="/owner/profile" element={<PrivateRoute roles={['store_owner']}><LazyLoad><UserProfile /></LazyLoad></PrivateRoute>} />
         <Route path="/owner/change-password" element={<PrivateRoute roles={['store_owner']}><LazyLoad><OwnerChangePassword /></LazyLoad></PrivateRoute>} />
