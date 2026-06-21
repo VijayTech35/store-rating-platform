@@ -3,15 +3,23 @@ const { Pool } = require('pg');
 
 const DB_NAME = process.env.DB_NAME || 'rating_app';
 
-const adminPool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432', 10),
-  database: 'postgres',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-});
+const getPoolConfig = (dbName = DB_NAME) => {
+  if (process.env.DATABASE_URL) {
+    return { connectionString: process.env.DATABASE_URL };
+  }
+  return {
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    database: dbName,
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres',
+  };
+};
+
+const adminPool = new Pool(getPoolConfig('postgres'));
 
 const ensureDb = async () => {
+  if (process.env.DATABASE_URL) return;
   const { rows } = await adminPool.query(
     `SELECT 1 FROM pg_database WHERE datname = $1`, [DB_NAME]
   );
@@ -22,13 +30,7 @@ const ensureDb = async () => {
   await adminPool.end();
 };
 
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432', 10),
-  database: DB_NAME,
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-});
+const pool = new Pool(getPoolConfig());
 
 const initSchema = async () => {
   await ensureDb();
