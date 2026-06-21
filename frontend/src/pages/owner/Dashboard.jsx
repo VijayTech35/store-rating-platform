@@ -1,16 +1,27 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { HiStar, HiUser, HiOfficeBuilding, HiEmojiHappy, HiPencil, HiMail, HiLocationMarker } from 'react-icons/hi';
+import { HiStar, HiUser, HiOfficeBuilding, HiEmojiHappy, HiPencil, HiMail, HiLocationMarker, HiSearch } from 'react-icons/hi';
 import AnimatedCounter from '../../components/AnimatedCounter';
 import toast from 'react-hot-toast';
 
 export default function OwnerDashboard() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [ratingFilter, setRatingFilter] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
+
+  const fetchDashboard = () => {
+    const params = {};
+    if (searchQuery) params.search = searchQuery;
+    if (ratingFilter) params.rating = ratingFilter;
+    params.sort = sortBy;
+    api.get('/dashboard/owner', { params }).then(({ data }) => setData(data)).catch(() => setError('Failed to load dashboard'));
+  };
 
   useEffect(() => {
-    api.get('/dashboard/owner').then(({ data }) => setData(data)).catch(() => setError('Failed to load dashboard'));
-  }, []);
+    fetchDashboard();
+  }, [searchQuery, ratingFilter, sortBy]);
 
   if (error) return <div className="bg-orange-50 dark:bg-peach/10 border border-peach/20 text-orange-500 dark:text-peach rounded-xl p-4 text-sm">{error}</div>;
   if (!data) return (
@@ -141,9 +152,36 @@ export default function OwnerDashboard() {
       )}
 
       <div className="glass-card-gradient rounded-2xl overflow-hidden fade-in-up">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-3">
-          <div className="w-1.5 h-5 rounded-full bg-gradient-to-b from-peach to-palepink" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-palepink">Users Who Rated Your Store</h2>
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-1.5 h-5 rounded-full bg-gradient-to-b from-peach to-palepink" />
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-palepink">Users Who Rated Your Store</h2>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1 max-w-xs">
+              <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                placeholder="Search by name or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 bg-white dark:bg-deepblue/50 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:ring-2 focus:ring-lavender/30 outline-none text-gray-900 dark:text-palepink placeholder-gray-400 dark:placeholder-palepink/30"
+              />
+            </div>
+            <select value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)} className="px-3 py-2 bg-white dark:bg-deepblue/50 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:ring-2 focus:ring-lavender/30 outline-none text-gray-900 dark:text-palepink">
+              <option value="">All Ratings</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="2">2 Stars</option>
+              <option value="1">1 Star</option>
+            </select>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="px-3 py-2 bg-white dark:bg-deepblue/50 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:ring-2 focus:ring-lavender/30 outline-none text-gray-900 dark:text-palepink">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="highest">Highest Rating</option>
+              <option value="lowest">Lowest Rating</option>
+            </select>
+          </div>
         </div>
         <div className="overflow-x-auto">
           {ratings.length === 0 ? (
@@ -153,16 +191,17 @@ export default function OwnerDashboard() {
               <thead>
                 <tr className="bg-white dark:bg-deepblue/50 border-b border-gray-200 dark:border-white/10">
                   <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-violet-500 dark:text-lavender/70 uppercase">User</th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-violet-500 dark:text-lavender/70 uppercase hidden sm:table-cell">Email</th>
                   <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-violet-500 dark:text-lavender/70 uppercase">Rating</th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-violet-500 dark:text-lavender/70 uppercase hidden md:table-cell">Date</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-violet-500 dark:text-lavender/70 uppercase">Date</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-white/5">
                 {ratings.map((r) => (
                   <tr key={r.id} className="hover:bg-violet-50/50 dark:bg-lavender/5 transition-colors">
-                    <td className="px-3 sm:px-6 py-3 text-sm font-medium text-gray-900 dark:text-palepink">{r.user_name}</td>
-                    <td className="px-3 sm:px-6 py-3 text-sm text-gray-600 dark:text-palepink/70 hidden sm:table-cell">{r.user_email}</td>
+                    <td className="px-3 sm:px-6 py-3">
+                      <div className="text-sm font-medium text-gray-900 dark:text-palepink">{r.user_name}</div>
+                      <div className="text-xs text-gray-500 dark:text-palepink/50">{r.user_email}</div>
+                    </td>
                     <td className="px-3 sm:px-6 py-3">
                       <div className="flex items-center gap-1">
                         {[1,2,3,4,5].map((star) => (
@@ -171,7 +210,7 @@ export default function OwnerDashboard() {
                         <span className="ml-1 text-sm font-medium text-gray-600 dark:text-palepink/70">{r.rating}/5</span>
                       </div>
                     </td>
-                    <td className="px-3 sm:px-6 py-3 text-sm text-gray-400 dark:text-palepink/50 hidden md:table-cell">{new Date(r.created_at).toLocaleDateString()}</td>
+                    <td className="px-3 sm:px-6 py-3 text-sm text-gray-400 dark:text-palepink/50">{new Date(r.created_at).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>
