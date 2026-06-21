@@ -17,7 +17,7 @@ A full-stack store rating web application built with **Express.js**, **PostgreSQ
 
 | Admin Dashboard | Login Page |
 |:---:|:---:|
-| ![Dashboard](screenshots/admin-dashboard.png) | ![Login](screenshots/login-page.png) |
+| ![Dashboard](C:\Users\yadav\OneDrive\Pictures\Screenshots\Screenshot 2026-06-21 105829.png) | ![Login](screenshots/login-page.png) |
 
 | Admin Users | Admin Stores |
 |:---:|:---:|
