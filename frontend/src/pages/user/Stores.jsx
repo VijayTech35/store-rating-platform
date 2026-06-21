@@ -79,7 +79,12 @@ export default function UserStores() {
   const fetchStores = () => {
     setLoading(true);
     setFetchError('');
-    api.get('/stores', { params: { search, sortBy, sortOrder } }).then(({ data }) => setData(data)).catch((err) => setFetchError(err.response?.data?.message || 'Failed to load stores')).finally(() => setLoading(false));
+    api.get('/stores', { params: { search, sortBy, sortOrder } }).then(({ data }) => {
+      setData(data);
+      const initial = {};
+      data.stores.forEach(s => { if (s.userRating) initial[s.id] = s.userRating; });
+      setRatingState(prev => ({ ...prev, ...initial }));
+    }).catch((err) => setFetchError(err.response?.data?.message || 'Failed to load stores')).finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchStores(); }, [search, sortBy, sortOrder]);
