@@ -73,10 +73,12 @@ export default function UserStores() {
   const [ratingState, setRatingState] = useState({});
   const [submitting, setSubmitting] = useState({});
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
 
   const fetchStores = () => {
     setLoading(true);
-    api.get('/stores', { params: { search, sortBy, sortOrder } }).then(({ data }) => setData(data)).finally(() => setLoading(false));
+    setFetchError('');
+    api.get('/stores', { params: { search, sortBy, sortOrder } }).then(({ data }) => setData(data)).catch((err) => setFetchError(err.response?.data?.message || 'Failed to load stores')).finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchStores(); }, [search, sortBy, sortOrder]);
@@ -125,7 +127,13 @@ export default function UserStores() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-        {loading ? (
+        {fetchError ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
+            <h3 className="text-lg font-semibold text-orange-500 dark:text-peach mb-1">Failed to load stores</h3>
+            <p className="text-sm text-gray-400 dark:text-palepink/50 mb-4">{fetchError}</p>
+            <button onClick={fetchStores} className="px-4 py-2 bg-orange-50 dark:bg-peach/10 text-orange-500 dark:text-peach font-medium rounded-xl text-sm hover:bg-orange-100 dark:bg-peach/20 transition-colors">Try again</button>
+          </div>
+        ) : loading ? (
           Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
         ) : data.stores.length === 0 ? (
           <EmptyState
