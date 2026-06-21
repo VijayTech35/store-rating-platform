@@ -11,7 +11,7 @@ A full-stack store rating web application built with **Express.js**, **PostgreSQ
 - Interactive star rating with confetti
 - CSV export, undo delete toasts
 - Dark mode, responsive design (mobile/tablet/desktop)
-- Docker support, GitHub Actions CI
+- GitHub Actions CI
 
 ## Screenshots
 
@@ -24,7 +24,7 @@ A full-stack store rating web application built with **Express.js**, **PostgreSQ
 | Backend | Express.js, PostgreSQL, JWT, express-rate-limit |
 | Frontend | React (Vite), TailwindCSS v4, Recharts, react-hot-toast |
 | Database | PostgreSQL |
-| DevOps | Render, Docker, Docker Compose, GitHub Actions |
+| DevOps | Render, GitHub Actions |
 
 ## Quick Start
 
@@ -74,10 +74,4 @@ For local development, PostgreSQL must be running. The database schema auto-init
 - `DELETE /api/admin/ratings/:id`
 - `PUT /api/admin/users/:id/password`
 
-## Docker
 
-```bash
-docker-compose up --build
-```
-
-Backend on port 5000, Frontend served via nginx on port 80.
