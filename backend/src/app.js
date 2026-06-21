@@ -35,7 +35,17 @@ app.use('/api/dashboard', dashboardRoutes);
 
 // Serve built frontend in production
 const frontendDist = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(frontendDist));
+const fs = require('fs');
+
+// Debug endpoint to check dist contents
+app.get('/api/debug/dist', (_req, res) => {
+  try {
+    const items = fs.readdirSync(path.join(frontendDist, 'assets'), { withFileTypes: true }).map(d => d.name);
+    res.json({ distExists: fs.existsSync(frontendDist), indexExists: fs.existsSync(path.join(frontendDist, 'index.html')), frontendDist, assets: items });
+  } catch (e) { res.json({ error: e.message }); }
+});
+
+app.use(express.static(frontendDist, { maxAge: '1h' }));
 app.get('*', (_req, res) => {
   res.sendFile(path.join(frontendDist, 'index.html'));
 });
