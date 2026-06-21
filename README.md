@@ -1,6 +1,6 @@
 # Store Rating Platform
 
-A full-stack store rating web application built with **Express.js**, **SQLite**, and **React (Vite)** with three user roles: **admin**, **user**, and **store_owner**.
+A full-stack store rating web application built with **Express.js**, **PostgreSQL**, and **React (Vite)** with three user roles: **admin**, **user**, and **store_owner**.
 
 ## Features
 
@@ -43,10 +43,10 @@ A full-stack store rating web application built with **Express.js**, **SQLite**,
 
 | Layer | Technology |
 |-------|-----------|
-| Backend | Express.js, better-sqlite3, JWT, express-rate-limit |
+| Backend | Express.js, PostgreSQL, JWT, express-rate-limit |
 | Frontend | React (Vite), TailwindCSS v4, Recharts, react-hot-toast |
-| Database | SQLite (auto-initialized) |
-| DevOps | Docker, Docker Compose, GitHub Actions |
+| Database | PostgreSQL |
+| DevOps | Render, Docker, Docker Compose, GitHub Actions |
 
 ## Quick Start
 
@@ -62,7 +62,7 @@ npm install
 npm run dev        # Runs on port 3000, proxies /api to backend
 ```
 
-The database auto-creates at `backend/data/rating_app.db` with seed data (5 stores, 5 users, ~37 ratings).
+For local development, PostgreSQL must be running. The database schema auto-initializes on first start. Seed with `cd backend && npm run db:seed`.
 
 ## Default Accounts
 
