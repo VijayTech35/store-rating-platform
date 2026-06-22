@@ -36,7 +36,8 @@ export default function AdminStoreDetail() {
   if (error) return <div className="bg-orange-50 dark:bg-peach/10 border border-peach/20 text-orange-500 dark:text-peach rounded-xl p-4 text-sm">{error}</div>;
   if (!data) return <div className="flex justify-center py-20"><div className="animate-spin h-8 w-8 border-4 border-lavender border-t-transparent rounded-full" role="status"><span className="sr-only">Loading...</span></div></div>;
 
-  const { store, avg_rating, ratings } = data;
+  const { store, ratings } = data;
+  const avg_rating = store.avg_rating;
 
   return (
     <div className="space-y-5 fade-in">
@@ -89,11 +90,11 @@ export default function AdminStoreDetail() {
               <tbody className="divide-y divide-gray-200 dark:divide-white/5">
                 {ratings.map((r, i) => (
                   <tr key={r.id || i} className="hover:bg-violet-50/50 dark:bg-lavender/5 transition-colors group">
-                    <td className="px-3 sm:px-5 py-3 text-sm font-medium text-gray-900 dark:text-palepink">{r.name}</td>
+                    <td className="px-3 sm:px-5 py-3 text-sm font-medium text-gray-900 dark:text-palepink">{r.user_name}</td>
                     <td className="px-3 sm:px-5 py-3"><div className="flex items-center gap-1">{Array.from({length: 5}, (_, s) => <HiStar key={s} className={`w-4 h-4 ${s < r.rating ? 'text-orange-500 dark:text-peach' : 'text-gray-400 dark:text-mutedpurple'}`} />)}</div></td>
                     <td className="px-3 sm:px-5 py-3 text-sm text-gray-400 dark:text-palepink/50 hidden sm:table-cell">{new Date(r.created_at).toLocaleDateString()}</td>
                     <td className="px-3 sm:px-5 py-3 text-right">
-                      <button onClick={() => handleDeleteRating(r.id, r.name, store.id)} className="p-1.5 rounded-lg text-gray-400 dark:text-mutedpurple hover:text-orange-500 dark:text-peach hover:bg-orange-50 dark:bg-peach/10 opacity-0 group-hover:opacity-100 transition-all" aria-label={`Delete rating by ${r.name}`}>
+                      <button onClick={() => handleDeleteRating(r.id, r.name, store.id)} className="p-1.5 rounded-lg text-gray-400 dark:text-mutedpurple hover:text-orange-500 dark:text-peach hover:bg-orange-50 dark:bg-peach/10 opacity-0 group-hover:opacity-100 transition-all" aria-label={`Delete rating by ${r.user_name}`}>
                         <HiTrash className="w-4 h-4" />
                       </button>
                     </td>

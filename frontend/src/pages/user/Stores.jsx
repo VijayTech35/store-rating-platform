@@ -164,7 +164,7 @@ export default function UserStores() {
             {store.userRating && (
               <div className="mb-2">
                 <span className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-100 to-orange-100 dark:from-lavender/20 dark:to-peach/20 text-orange-600 dark:text-peach shadow-sm">
-                  Your taste: {RATING_LABELS[store.userRating]?.toLowerCase() || 'rated'}
+                  Your taste: {store.userRating}/5 - {RATING_LABELS[store.userRating]?.toLowerCase() || 'rated'}
                 </span>
               </div>
             )}
